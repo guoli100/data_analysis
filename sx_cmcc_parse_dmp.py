@@ -29,6 +29,7 @@ def parse_dmp(file):
 
             for col in cols:
                 ncol = col.strip().split(' ', 2)
+                ncol[0] = ncol[0].strip('"')
                 ncol.insert(0, tab_name)
                 data.append(ncol)
 
