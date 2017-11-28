@@ -47,4 +47,4 @@ if __name__ == '__main__':
             # 将文件名传入你的处理函数
             parse_dmp(f)
     else:
-        sys.exit('需要指定一个或多个文件名')
+        sys.exit('需要指定一个或多个格式化后的dmp文件')
