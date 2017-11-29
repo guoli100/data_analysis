@@ -1,29 +1,36 @@
 #!/usr/bin/env python3
-import os
 import sys
-import glob
 import pandas as pd
 
+pd.set_option('display.height', 1000)
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
 
-def pdm_dmp_anlys(xl):
-    if not os.path.isfile(xl):
-        sys.exit(xl + ' is not a file')
 
-    filename, ext = os.path.splitext(xl)
-    df = pd.read_excel(xl, usecols="C, E")
-    print(df)
+def merge_pdm_xls(filelist):
+    dflist = []
+    for f in filelist:
+        dflist.append(pd.read_excel(f, usecols='C, E'))
+    return pd.concat(dflist)
+
+
+def merge_dmp_xlsx(filelist):
+    dflist = []
+    for f in filelist:
+        dflist.append(pd.read_excel(f, usecols='B, C'))
+    return pd.concat(dflist)
 
 
 if __name__ == '__main__':
     if len(sys.argv) >= 2:
-        filelist = []
-        for f in sys.argv[1:]:
-            filelist.extend(glob.glob(f))
-        print(filelist)
-
-        for f in filelist:
-            # 将文件名传入你的处理函数
-            print('\n正在分析文件: ' + f)
-            pdm_dmp_anlys(f)
+        pdm_data = merge_pdm_xls(sys.argv[1:-2])
+        dmp_data = merge_dmp_xlsx(sys.argv[-2:])
+        pdm_data.columns = pd.Index(['表', '字段'])
+        dmp_data.columns = pd.Index(['表', '字段'])
+        pdm_data = pdm_data.drop_duplicates()
+        dmp_data = dmp_data.drop_duplicates()
+        print(pd.merge(pdm_data, dmp_data))
+        #  print(dmp_data)
     else:
         sys.exit('需要指定一个或多个Excel文件')
